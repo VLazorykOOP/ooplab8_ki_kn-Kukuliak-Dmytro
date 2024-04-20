@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <cstring> // for strlen
+#include <cstring>
 
 template <typename T>
 class SortFind {
@@ -13,7 +13,7 @@ private:
 public:
     SortFind(size_t N) {
         this->n = N;
-        arr = new T[N]; // Allocate memory for the array
+        arr = new T[N];
     }
 
     ~SortFind() {
@@ -59,6 +59,56 @@ public:
             }
         }
     }
+
+    T& operator[](size_t index) {
+        return arr[index];
+    }
+
+
+    SortFind& operator=(const SortFind& other) {
+        if (this != &other) {
+            delete[] arr;
+            n = other.n;
+            arr = new T[n];
+            for (size_t i = 0; i < n; ++i) {
+                arr[i] = other.arr[i];
+            }
+        }
+        return *this;
+    }
+
+
+    SortFind operator+(const SortFind& other) {
+        if (this->n == other.n)
+        {
+            SortFind result(n);
+            for (int i = 0; i < n; i++) {
+                result[i] = this->arr[i] + other.arr[i];
+            }
+        }
+        else
+        {
+        std::cout << "The objects don`t match";
+        return *this;
+        }
+    }
+
+
+    SortFind operator-(const SortFind& other) {
+        if (this->n == other.n) {
+            SortFind result(n);
+                for (int i = 0; i < n; i++) {
+                    result[i] = this->arr[i] - other.arr[i];
+                }
+        }
+        else
+        {
+        std::cout << "The objects don`t match";
+        return *this;
+        }
+    }
+
+
 };
 
 // спеціалізація для char*
@@ -67,43 +117,42 @@ void SortFind<char*>::randomize() {
     srand(time(NULL));
     for (size_t i = 0; i < n; i++) {
         int len = rand() % 20 + 1; 
-        arr[i] = new char[len + 1]; // Allocate memory for the string
+        arr[i] = new char[len + 1]; 
         for (int j = 0; j < len; j++) {
-            arr[i][j] = 'a' + rand() % 26; // Random lowercase letter
+            arr[i][j] = 'a' + rand() % 26; 
         }
-        arr[i][len] = '\0'; // Null-terminate the string
+        arr[i][len] = '\0'; 
     }
 }
 
-// Template specialization for char*
+
 template <>
 void SortFind<char*>::countingSort() {
-    std::vector<int> count(128); // ASCII range
+    std::vector<int> count(128); 
     for (int i = 0; i < n; i++) {
         count[strlen(arr[i])]++;
     }
     size_t position = 0;
     for (int i = 0; i < count.size(); i++) {
         for (int j = 0; j < count[i]; j++) {
-            int len = i; // Length of the string
-            char* temp = new char[len + 1]; // Allocate memory for the sorted string
+            int len = i; 
+            char* temp = new char[len + 1]; 
             for (int k = 0; k < len; k++) {
-                temp[k] = 'a' + rand() % 26; // Random lowercase letter
+                temp[k] = 'a' + rand() % 26; 
             }
-            temp[len] = '\0'; // Null-terminate the string
-            arr[position] = temp; // Assign the sorted string
+            temp[len] = '\0'; 
+            arr[position] = temp; 
             position++;
         }
     }
 }
 
-// Template specialization for const char*
-// Template specialization for const char*
+
 template <>
 int SortFind<const char*>::find(const char* a) {
     int index = -1;
     for (int i = 0; i < n; i++) {
-        if (strcmp(arr[i], a) == 0) { // Compare strings
+        if (strcmp(arr[i], a) == 0) { 
             index = i;
             break;
         }
